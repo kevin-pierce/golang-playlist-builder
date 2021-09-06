@@ -44,21 +44,31 @@ func GetHTML() (*html.Node, error) {
 }
 
 func ParseHTML(n *html.Node) {
-	fmt.Println(n.Type)
-	fmt.Println(n)
+	var rootNode *html.Node
+	rootNode = nil
 
-	if n.Type == html.ElementNode && n.Data == "a" {
-		for _, element := range n.Attr {
-			if element.Key == "href" {
-				fmt.Printf("LINK: %s\n", element.Val)
+	var recFindRoot func(*html.Node)
+
+	recFindRoot = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "ol" {
+			rootNode = n
+		}
+
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			if rootNode != nil {
+				break
+			} else {
+				recFindRoot(c)
 			}
 		}
 	}
-
-	for c := n.FirstChild; c != nil; c = c.NextSibling {
-		ParseHTML(c)
-	}
+	recFindRoot(n)
+	fmt.Println(rootNode)
 }
+
+// func GetLinks(n *html.Node) {
+
+// }
 
 // 	root, err := html.Parse(r)
 // 	if err != nil {
