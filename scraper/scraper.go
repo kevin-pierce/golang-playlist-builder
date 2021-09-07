@@ -1,7 +1,6 @@
 package scraper
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"regexp"
@@ -9,18 +8,18 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Returns the main list of songs
 func GetSongList() []string {
 	htmlDoc, err := GetHTML()
-	fmt.Println(htmlDoc)
 
 	if err != nil {
 		log.Fatalln(err)
 	}
-	songs, err := GetSongs(htmlDoc)
-	fmt.Println(songs)
+	songs := GetSongs(htmlDoc)
 	return songs
 }
 
+// Makes request to Billboard website, returns html document that can be parsed
 func GetHTML() (*goquery.Document, error) {
 	resp, err := http.Get("https://www.billboard.com/charts/hot-100")
 
@@ -36,7 +35,8 @@ func GetHTML() (*goquery.Document, error) {
 	return doc, nil
 }
 
-func GetSongs(doc *goquery.Document) ([]string, error) {
+// Parses document for songs, returns slice of song title + first artist name
+func GetSongs(doc *goquery.Document) []string {
 	var songList []string
 
 	doc.Find(".chart-list__element .display--flex").Each(func(i int, s *goquery.Selection) {
@@ -48,9 +48,7 @@ func GetSongs(doc *goquery.Document) ([]string, error) {
 		firstArtist := splitExp.Split(songArtist, -1)[0]
 
 		songInfo := songTitle + " " + firstArtist
-		//fmt.Println(songInfo)
-
 		songList = append(songList, songInfo)
 	})
-	return songList, nil
+	return songList
 }

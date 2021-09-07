@@ -2,8 +2,12 @@ package main
 
 import (
 	"billboard-scraper/scraper"
+	"fmt"
 )
 
 func main() {
-	scraper.GetSongList()
+	var songList []string
+	songList = scraper.GetSongList()
+
+	fmt.Println(songList)
 }
