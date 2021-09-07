@@ -12,6 +12,5 @@ func main() {
 
 	//fmt.Println(songList)
 
-	spotifyappauth.AuthUser()
-
+	authorizeUser.AuthUser()
 }
