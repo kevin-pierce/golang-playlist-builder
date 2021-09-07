@@ -1,13 +1,17 @@
 package main
 
 import (
-	"billboard-scraper/scraper"
-	"fmt"
+	"billboard-scraper/auth"
+	//"billboard-scraper/scraper"
+	//"fmt"
 )
 
 func main() {
-	var songList []string
-	songList = scraper.GetSongList()
+	// var songList []string
+	// songList = scraper.GetSongList()
 
-	fmt.Println(songList)
+	//fmt.Println(songList)
+
+	spotifyappauth.AuthUser()
+
 }
