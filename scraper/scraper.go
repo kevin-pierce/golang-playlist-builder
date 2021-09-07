@@ -44,7 +44,9 @@ func GetLinks(doc *goquery.Document) ([]string, error) {
 	var songList []string
 
 	doc.Find(".chart-list__element .display--flex").Each(func(i int, s *goquery.Selection) {
-		songTitle := s.Find(".chart-element__information").Text()
+		songTitle := s.Find(".chart-element__information__song").Text()
+		songArtist := s.Find(".chart-element__information__artist").Text()
+		fmt.Println(songArtist)
 		fmt.Println(songTitle)
 		//fmt.Println(s)
 	})
