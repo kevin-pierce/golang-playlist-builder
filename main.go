@@ -2,6 +2,8 @@ package main
 
 import (
 	"billboard-scraper/auth"
+	"billboard-scraper/playlist-builder"
+	"fmt"
 	//"billboard-scraper/scraper"
 )
 
@@ -11,5 +13,8 @@ func main() {
 
 	//fmt.Println(songList)
 
-	authorizeUser.AuthUser()
+	client, ctx := authorizeUser.AuthUser()
+	fmt.Println(client)
+	fmt.Println(ctx)
+	playlist.BuildPlaylist(client, ctx)
 }

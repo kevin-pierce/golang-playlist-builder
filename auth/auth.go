@@ -20,7 +20,7 @@ var (
 	state = "abc123"
 )
 
-func AuthUser() {
+func AuthUser() (*spotify.Client, context.Context) {
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
@@ -40,6 +40,7 @@ func AuthUser() {
 
 	url := auth.AuthURL(state)
 
+	// Consult on fix for this issue
 	// tempSplit := strings.split(url, "client_id=")
 	// newUrl = tempSplit[0] + "client_id=" + os.Getenv("SPOTIFY_ID")
 
@@ -49,17 +50,7 @@ func AuthUser() {
 	client := <-ch
 
 	// use the client to make calls that require authorization
-	user, err := client.CurrentUser(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("You are logged in as:", user.ID)
-
-	newPlaylist, err := client.CreatePlaylistForUser(context.Background(), user.ID, "TEST GOLANG", "Test for my golang application", true, false)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(newPlaylist)
+	return client, context.Background()
 }
 
 func completeAuth(w http.ResponseWriter, r *http.Request) {
