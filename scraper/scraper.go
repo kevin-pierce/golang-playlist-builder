@@ -4,14 +4,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"regexp"
 
 	"github.com/PuerkitoBio/goquery"
 )
-
-type LinkTag struct {
-	linkRef  string
-	linkText string
-}
 
 func GetSongList() []string {
 	htmlDoc, err := GetHTML()
@@ -20,9 +16,9 @@ func GetSongList() []string {
 	if err != nil {
 		log.Fatalln(err)
 	}
-
-	links, err := GetLinks(htmlDoc)
-	return links
+	songs, err := GetSongs(htmlDoc)
+	fmt.Println(songs)
+	return songs
 }
 
 func GetHTML() (*goquery.Document, error) {
@@ -40,16 +36,21 @@ func GetHTML() (*goquery.Document, error) {
 	return doc, nil
 }
 
-func GetLinks(doc *goquery.Document) ([]string, error) {
+func GetSongs(doc *goquery.Document) ([]string, error) {
 	var songList []string
 
 	doc.Find(".chart-list__element .display--flex").Each(func(i int, s *goquery.Selection) {
 		songTitle := s.Find(".chart-element__information__song").Text()
 		songArtist := s.Find(".chart-element__information__artist").Text()
-		fmt.Println(songArtist)
-		fmt.Println(songTitle)
-		//fmt.Println(s)
-	})
 
+		// Only search for first artists in list of artists
+		splitExp := regexp.MustCompile(`&|Featuring| X `)
+		firstArtist := splitExp.Split(songArtist, -1)[0]
+
+		songInfo := songTitle + " " + firstArtist
+		//fmt.Println(songInfo)
+
+		songList = append(songList, songInfo)
+	})
 	return songList, nil
 }
