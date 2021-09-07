@@ -15,7 +15,7 @@ import (
 const redirectURI = "http://localhost:8080/callback"
 
 var (
-	auth  = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURI), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate))
+	auth  = spotifyauth.New(spotifyauth.WithRedirectURL(redirectURI), spotifyauth.WithScopes(spotifyauth.ScopeUserReadPrivate, spotifyauth.ScopePlaylistModifyPublic))
 	ch    = make(chan *spotify.Client)
 	state = "abc123"
 )
@@ -54,6 +54,12 @@ func AuthUser() {
 		log.Fatal(err)
 	}
 	fmt.Println("You are logged in as:", user.ID)
+
+	newPlaylist, err := client.CreatePlaylistForUser(context.Background(), user.ID, "TEST GOLANG", "Test for my golang application", true, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(newPlaylist)
 }
 
 func completeAuth(w http.ResponseWriter, r *http.Request) {

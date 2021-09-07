@@ -3,7 +3,6 @@ package main
 import (
 	"billboard-scraper/auth"
 	//"billboard-scraper/scraper"
-	"fmt"
 )
 
 func main() {
