@@ -8,14 +8,14 @@ import (
 )
 
 func BuildPlaylist(client *spotify.Client, ctx context.Context, songList []string) {
-	fmt.Println(songList)
-	var uriList []spotify.URI
+	var uriList []spotify.ID
 	user, err := client.CurrentUser(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
 	fmt.Println("You are logged in as:", user.ID)
 
+	fmt.Println("Getting songs...")
 	for _, songName := range songList {
 		result, err := client.Search(ctx, songName, spotify.SearchTypeTrack)
 		if err != nil {
@@ -23,23 +23,23 @@ func BuildPlaylist(client *spotify.Client, ctx context.Context, songList []strin
 		}
 
 		if len(result.Tracks.Tracks) > 0 {
-			songURI := result.Tracks.Tracks[0].SimpleTrack.URI
+			songURI := result.Tracks.Tracks[0].SimpleTrack.ID
 			uriList = append(uriList, songURI)
 		}
 	}
 
-	fmt.Println(uriList)
+	fmt.Println("Creating playlist...")
+	newPlaylist, err := client.CreatePlaylistForUser(ctx, user.ID, "Top 100 (according to Golang)", "Billboard Top 100 songs, compiled by a Golang application", true, false)
+	if err != nil {
+		log.Fatal(err)
+	}
+	newPlaylistID := newPlaylist.SimplePlaylist.ID
 
-	// ///result, err := client.Search(ctx, songList[0], spotify.SearchTypeTrack)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-
-	// fmt.Println(result.Tracks.Tracks[0].SimpleTrack.URI)
-
-	// newPlaylist, err := client.CreatePlaylistForUser(context.Background(), user.ID, "TEST GOLANG", "Test for my golang application", true, false)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
-	// fmt.Println(newPlaylist)
+	version, err := client.AddTracksToPlaylist(ctx, newPlaylistID, uriList...)
+	if err != nil {
+		log.Fatal(err)
+	} else {
+		fmt.Println("Succesfully created playlist!")
+		fmt.Println(version)
+	}
 }

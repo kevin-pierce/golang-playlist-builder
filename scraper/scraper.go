@@ -44,7 +44,7 @@ func GetSongs(doc *goquery.Document) []string {
 		songArtist := s.Find(".chart-element__information__artist").Text()
 
 		// Only search for first artists in list of artists
-		splitExp := regexp.MustCompile(`&|Featuring| X `)
+		splitExp := regexp.MustCompile(`&|Featuring| X | x`)
 		firstArtist := splitExp.Split(songArtist, -1)[0]
 
 		songInfo := songTitle + " " + firstArtist

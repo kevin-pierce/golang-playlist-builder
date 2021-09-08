@@ -6,7 +6,6 @@ import (
 	"github.com/zmb3/spotify/v2/auth"
 	"log"
 	"net/http"
-	// "os"
 
 	"github.com/joho/godotenv"
 	"github.com/zmb3/spotify/v2"
@@ -20,6 +19,8 @@ var (
 	state = "abc123"
 )
 
+// Authentication for Spotify
+// Adapted from https://github.com/zmb3/spotify/blob/master/examples/authenticate/authcode/authenticate.go
 func AuthUser() (*spotify.Client, context.Context) {
 	err := godotenv.Load()
 	if err != nil {
@@ -50,6 +51,7 @@ func AuthUser() (*spotify.Client, context.Context) {
 	return client, context.Background()
 }
 
+// Auth helper
 func completeAuth(w http.ResponseWriter, r *http.Request) {
 	tok, err := auth.Token(r.Context(), state, r)
 	if err != nil {
