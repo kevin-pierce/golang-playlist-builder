@@ -28,9 +28,6 @@ func AuthUser() (*spotify.Client, context.Context) {
 
 	// first start an HTTP server
 	http.HandleFunc("/callback", completeAuth)
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		log.Println("Got request for:", r.URL.String())
-	})
 	go func() {
 		err := http.ListenAndServe(":8080", nil)
 		if err != nil {
