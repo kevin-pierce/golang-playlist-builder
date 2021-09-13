@@ -3,17 +3,18 @@ package playlist
 import (
 	"context"
 	"fmt"
-	"github.com/zmb3/spotify/v2"
 	"log"
+
+	"github.com/zmb3/spotify/v2"
 )
 
-func BuildPlaylist(client *spotify.Client, ctx context.Context, songList []string) {
+func BuildPlaylist(client *spotify.Client, ctx context.Context, songList []string, weekOf string) {
 	var uriList []spotify.ID
 	user, err := client.CurrentUser(ctx)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("You are logged in as:", user.ID)
+	fmt.Println("Logged in!")
 
 	fmt.Println("Getting songs...")
 	for _, songName := range songList {
@@ -29,7 +30,9 @@ func BuildPlaylist(client *spotify.Client, ctx context.Context, songList []strin
 	}
 
 	fmt.Println("Creating playlist...")
-	newPlaylist, err := client.CreatePlaylistForUser(ctx, user.ID, "Top 100 (according to Golang)", "Billboard Top 100 songs, compiled by a Golang application", true, false)
+	descStr := fmt.Sprintf("Billboard Top 100 songs, compiled by a Golang application for the week of %s", weekOf)
+
+	newPlaylist, err := client.CreatePlaylistForUser(ctx, user.ID, "Top 100 (according to Golang)", descStr, true, false)
 	if err != nil {
 		log.Fatal(err)
 	}

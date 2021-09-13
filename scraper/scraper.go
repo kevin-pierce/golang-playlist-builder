@@ -4,19 +4,20 @@ import (
 	"log"
 	"net/http"
 	"regexp"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 )
 
 // Returns the main list of songs
-func GetSongList() []string {
+func GetSongList() ([]string, string) {
 	htmlDoc, err := GetHTML()
 
 	if err != nil {
 		log.Fatalln(err)
 	}
-	songs := GetSongs(htmlDoc)
-	return songs
+	songs, weekOf := GetSongs(htmlDoc)
+	return songs, weekOf
 }
 
 // Makes request to Billboard website, returns html document that can be parsed
@@ -36,8 +37,11 @@ func GetHTML() (*goquery.Document, error) {
 }
 
 // Parses document for songs, returns slice of song title + first artist name
-func GetSongs(doc *goquery.Document) []string {
+func GetSongs(doc *goquery.Document) ([]string, string) {
 	var songList []string
+
+	weekOf := doc.Find(".date-selector__wrapper").Find("div").Find("button").Text()
+	weekOf = strings.TrimSpace(weekOf)
 
 	doc.Find(".chart-list__element .display--flex").Each(func(i int, s *goquery.Selection) {
 		songTitle := s.Find(".chart-element__information__song").Text()
@@ -50,5 +54,5 @@ func GetSongs(doc *goquery.Document) []string {
 		songInfo := songTitle + " " + firstArtist
 		songList = append(songList, songInfo)
 	})
-	return songList
+	return songList, weekOf
 }
